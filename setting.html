@@ -1,21 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Settings</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusGuard Pro | Updates</title>
+    <style>
+        /* All previous CSS styles remain the same */
+        /* Only adding new styles specific to updates/settings */
+        
+        .update-card {
+            background-color: rgba(10, 10, 26, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.05);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .update-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 247, 255, 0.1);
+        }
+        
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .update-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .update-version {
+            font-size: 12px;
+            color: var(--primary);
+            background-color: rgba(0, 247, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+        
+        .update-description {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+        }
+        
+        .update-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .update-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .update-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .update-btn.primary {
+            background-color: var(--primary);
+            color: var(--dark);
+        }
+        
+        .update-btn.primary:hover {
+            background-color: #00d8df;
+        }
+        
+        .update-btn.secondary {
+            background-color: rgba(0, 247, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .update-btn.secondary:hover {
+            background-color: rgba(0, 247, 255, 0.2);
+        }
+        
+        .update-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+        
+        .status-pending {
+            color: var(--warning);
+        }
+        
+        .status-ready {
+            color: var(--success);
+        }
+        
+        .status-critical {
+            color: var(--alert);
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+        }
+        
+        .settings-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .setting-label {
+            font-size: 14px;
+        }
+        
+        .setting-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .select-dropdown {
+            background-color: rgba(10, 10, 26, 0.7);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            min-width: 200px;
+        }
+        
+        .save-settings {
+            background-color: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .save-settings:hover {
+            background-color: #00d8df;
+        }
+    </style>
 </head>
-<body class="bg-black text-white">
-  [NAVBAR HERE]
+<body>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
 
-  <section class="p-6">
-    <h2 class="text-2xl text-cyan-400 mb-4">System Settings</h2>
-    <form class="bg-gray-800 p-6 rounded-lg space-y-4">
-      <label class="block">Alert Threshold (CPU %)
-        <input type="number" class="mt-1 w-full p-2 rounded bg-gray-900 text-white border border-cyan-500">
-      </label>
-      <button class="bg-cyan-600 px-4 py-2 rounded hover:bg-cyan-700">Save</button>
-    </form>
-  </section>
-</body>
-</html>
+<div class="container">
+<header>
+  <div class="logo">
+      <div class="logo-icon">NG</div>
+      <h1>NexusGuard Pro</h1>
+  </div>
+  <div class="user-profile">
+      <div class="avatar">AD</div>
+      <span>Admin</span>
+  </div>
+</header>
+
+<div class="dashboard">
+  <div class="sidebar">
+      <div class="nav-item">
+          <i>📊</i>
+          <span>Dashboard</span>
+      </div>
+      <div class="nav-item">
+          <i>🖥️</i>
+          <span>Devices</span>
+      </div>
+      <div class="nav-item">
+          <i>⚠️</i>
+          <span>Alerts</span>
+      </div>
+      <div class="nav-item">
+          <i>📈</i>
+          <span>Analytics</span>
+      </div>
+      <div class="nav-item">
+          <i>⚙️</i>
+          <span>Settings</span>
+      </div>
+      <div class="nav-item active">
+          <i>🔄</i>
+          <span>Updates</span>
+      </div>
+      <div class="nav-item">
+          <i>📋</i>
+          <span>Reports</span>
+      </div>
+      <div class="nav-item">
+          <i>🛡️</i>
+          <span>Security</span>
+      </div>
+  </div>
+
+  <div class="main-content">
+      <div class="status-cards">
+          <div class="card">
+              <div class="card-header">
+                  <div>
+                      <div class="card-title">PENDING UPDATES</div>
+                      <div class="card-value">15</div>
+                      <div class="card-change positive">
+                          <i>↑</i> 3 new since yesterday
+                      </div>
+                  </div>
+                  <div class="card-icon">
+                      <i>🔄</i>
+                  </div>
+              </div>
+          </div>
+
+          <div class="card">
+              <div class="card-header">
+                  <div>
+                      <div class="card-title">SECURITY UPDATES</div>
+                      <div class="card-value">8</div>
+                      <div class="card-change positive">
+                          <i>↑</i> 2 critical
+                      </div>
+                  </div>
+                  <div class="card-icon">
+                      <i>🛡️</i>
+                  </div>
+              </div>
+          </div>
+
+          <div class="card">
+              <div class="card-header">
+                  <div>
+                      <div class="card-title">LAST UPDATE</div>
+                      <div class="card-value">3 days</div>
+                      <div class="card-change negative">
+                          <i>↓</i> Overdue by 1 day
+                      </div>
+                  </div>
+                  <div class="card-icon">
+                      <i>⏱️</i>
+                  </div>
+              </div>
+          </div>
+
+          <div class="card">
+              <div class="card-header">
+                  <div>
+                      <div class="card-title">UPDATE SUCCESS RATE</div>
+                      <div class="card-value">98%</div>
+                      <div class="card-change positive">
+                          <i>↑</i> 2% from last month
+                      </div>
+                  </div>
+                  <div class="card-icon">
+                      <i>📊</i>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="chart-container" style="grid-column: span 2;">
+          <div class="chart-header">
+              <div class="chart-title">Update Deployment Status</div>
+              <div class="chart-actions">
+                  <button class="chart-btn">Security</button>
+                  <button class="chart-btn">Feature</button>
+                  <button class="chart-btn active">All</button>
+              </div>
+          </div>
+          <div class="chart-placeholder">
+              Update Deployment Visualization
+          </div>
+      </div>
+
+      <div style="grid-column: span 2;">
+          <div class="alerts-header">
+              <div class="alerts-title">Available Updates</div>
+              <div class="alert-badge">15 Pending</div>
+          </div>
+          
+          <div class="update-card">
+              <div class="update-header">
+                  <div class="update-title">Security Patch KB5034441</div>
+                 

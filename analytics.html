@@ -1,19 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Analytics</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusGuard Pro | Analytics Dashboard</title>
+    <style>
+        :root {
+            --primary: #00f7ff;
+            --secondary: #7b2dff;
+            --dark: #0a0a1a;
+            --darker: #050510;
+            --alert: #ff2d7b;
+            --warning: #ff7b2d;
+            --success: #2dff7b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: white;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(123, 45, 255, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(0, 247, 255, 0.15) 0%, transparent 25%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 247, 255, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-weight: bold;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            background-color: rgba(10, 10, 26, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.05);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(0, 247, 255, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: rgba(0, 247, 255, 0.2);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: rgba(10, 10, 26, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 247, 255, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .chart-container {
+            background-color: rgba(10, 10, 26, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.05);
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .chart-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chart-btn {
+            background-color: rgba(0, 247, 255, 0.1);
+            border: none;
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-btn:hover {
+            background-color: rgba(0, 247, 255, 0.2);
+        }
+        
+        .chart-btn.active {
+            background-color: rgba(0, 247, 255, 0.3);
+        }
+        
+        .chart-area {
+            width: 100%;
+            height: calc(100% - 40px);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-card {
+            background-color: rgba(10, 10, 26, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.05);
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .summary-trend {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--alert);
+        }
+        
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .metrics-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background-color: rgba(0, 247, 255, 0.1);
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .metrics-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+        
+        .metrics-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .metrics-table tr:hover td {
+            background-color: rgba(0, 247, 255, 0.05);
+        }
+        
+        .badge {
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-critical {
+            background-color: rgba(255, 45, 123, 0.2);
+            color: var(--alert);
+        }
+        
+        .badge-warning {
+            background-color: rgba(255, 123, 45, 0.2);
+            color: var(--warning);
+        }
+        
+        .badge-normal {
+            background-color: rgba(45, 255, 123, 0.2);
+            color: var(--success);
+        }
+        
+        .insights-list {
+            margin-top: 15px;
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .insight-icon.critical {
+            background-color: rgba(255, 45, 123, 0.1);
+            color: var(--alert);
+        }
+        
+        .insight-icon.warning {
+            background-color: rgba(255, 123, 45, 0.1);
+            color: var(--warning);
+        }
+        
+        .insight-icon.info {
+            background-color: rgba(0, 247, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .insight-icon.success {
+            background-color: rgba(45, 255, 123, 0.1);
+            color: var(--success);
+        }
+        
+        .insight-content {
+            flex: 1;
+        }
+        
+        .insight-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .insight-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-item {
+            background-color: rgba(10, 10, 26, 0.7);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(0, 247, 255, 0.1);
+            cursor: pointer;
+        }
+        
+        .filter-item.active {
+            background-color: rgba(0, 247, 255, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .glow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.2) 0%, transparent 70%);
+            filter: blur(30px);
+            z-index: -1;
+        }
+        
+        .glow-1 {
+            top: 10%;
+            left: 10%;
+        }
+        
+        .glow-2 {
+            bottom: 10%;
+            right: 10%;
+            background: radial-gradient(circle, rgba(123, 45, 255, 0.2) 0%, transparent 70%);
+        }
+        
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        .donut-chart-container {
+            position: relative;
+        }
+        
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .donut-center-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .donut-center-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
 </head>
-<body class="bg-black text-white">
-  [NAVBAR HERE]
-
-  <section class="p-6">
-    <h2 class="text-2xl text-cyan-400 mb-4">Performance Analytics</h2>
-    <div class="bg-gray-800 p-6 rounded-lg text-cyan-300 shadow-xl shadow-cyan-500">
-      <p>Last 24 Hours: No major downtimes.</p>
-      <p>Average uptime: 99.4%</p>
-    </div>
-  </section>
-</body>
-</html>
+<body>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">NG</div>
+                <h1>NexusGuard Pro</h1>
+            </div>
+            <div class="user-profile">
+                <div class="avatar">AD</div>
+                <span>Admin</span>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="sidebar">
+                <div class="nav-item">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item">
+                    <i>🖥️</i>
+                    <span>Devices</span>
+                </div>
+                <div class="nav-item">
+                    <i>⚠️</i>
+                    <span>Alerts</span>
+                </div>
+                <div class="nav-item active">
+                    <i>📈</i>
+                    <span>Analytics</span>
+                </div>
+                <div class="nav-item">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </div>
+                <div class="nav-item">
+                    <i>🔄</i>
+                    <span>Updates</span>
+                </div>
+                <div class="nav-item">
+                    <i>📋</i>
+                    <span>Reports</span>
+                </div>
+                <div class="nav-item">
+                    <i>🛡️</i>
+                    <span>Security</span>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="card-header">
+                    <div class="card-title">System Analytics</div>
+                    <div class="chart-actions">
+                        <button class="chart-btn">Export</button>
+                        <button class="chart-btn">Share</button>
+                    </div>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-item active">
+                        <i>🔍</i>
+                        <span>All Devices</span>
+                    </div>
+                    <div class="filter-item">
+                        <i>⚠️</i>
+                        <span>Warning Status</span>
+                    </div>
+                    <div class="filter-item">
+                        <i>🚨</i>
+                        <span>Critical Status</span>
+                    </div>
+                    <div class="filter-item">
+                        <i>📅</i>
+                        <span>Last 30 Days</span>
+                    </div>
+                </div>
+                
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">Average CPU Usage</div>
+                        <div class="summary-value">48%</div>
+                        <div class="summary-trend trend-up">
+                            <i>↑</i> 5% from previous period
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Average Memory Usage</div>
+                        <div class="summary-value">55%</div>
+                        <div class="summary-trend trend-down">
+                            <i>↓</i> 3% from previous period
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Incidents Detected</div>
+                        <div class="summary-value">24</div>
+                        <div class="summary-trend trend-up">
+                            <i>↑</i> 8 from previous period
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Average Response Time</div>
+                        <div class="summary-value">1.8s</div>
+                        <div class="summary-trend trend-down">
+                            <i>↓</i> 0.3s from previous period
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">Performance Metrics Over Time</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn">24H</button>
+                            <button class="chart-btn">7D</button>
+                            <button class="chart-btn active">30D</button>
+                        </div>
+                    </div>
+                    <div class="chart-area">
+                        <svg width="100%" height="100%" viewBox="0 0 1000 220">
+                            <!-- Grid Lines -->
+                            <line x1="50" y1="20" x2="50" y2="180" stroke="rgba(255, 255, 255, 0.1)" />
+                            <line x1="50" y1="180" x2="950" y2="180" stroke="rgba(255, 255, 255, 0.1)" />
+                            <line x1="50" y1="60" x2="950" y2="60" stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="5,5" />
+                            <line x1="50" y1="100" x2="950" y2="100" stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="5,5" />
+                            <line x1="50" y1="140" x2="950" y2="140" stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="5,5" />
+                            
+                            <!-- Y-axis labels -->
+                            <text x="35" y="20" text-anchor="end" fill="rgba(255, 255, 255, 0.5)" font-size="12">100%</text>
+                            <text x="35" y="60" text-anchor="end" fill="rgba(255, 255, 255, 0.5)" font-size="12">75%</text>
+                            <text x="35" y="100" text-anchor="end" fill="rgba(255, 255, 255, 0.5)" font-size="12">50%</text>
+                            <text x="35" y="140" text-anchor="end" fill="rgba(255, 255, 255, 0.5)" font-size="12">25%</text>
+                            <text x="35" y="180" text-anchor="end" fill="rgba(255, 255, 255, 0.5)" font-size="12">0%</text>
+                            
+                            <!-- X-axis labels -->
+                            <text x="50" y="200" text-anchor="middle" fill="rgba(255, 255, 255, 0.5)" font-size="12">Apr 1</text>
+                            <text x="200" y="200" text-anchor="middle" fill="rgba(255, 255, 255, 0.5)" font-size="12">Apr 7</text>
+                            <text x="350" y="200" text-anchor="middle" fill="rgba(255, 255, 255, 0.5)" font-size="12">Apr 14</text>
+                            <text x="500" y="200" text-anchor="middle" fill="rgba(255, 255, 255, 0.5)" font-size="12">Apr 21</text>
+                            <text x="650" y="200" text-anchor="middle" fill="rgba(255, 255, 255, 0.5)" font-size="12">Apr 28</text>
+                            <text x="800" y="200" text-anchor="middle" fill="rgba(255, 255, 255, 0.5)" font-size="12">May 5</text>
+                            <text x="950" y="200" text-anchor="middle" fill="rgba(255, 255, 255, 0.5)" font-size="12">May 12</text>
+                            
+                            <!-- CPU Usage Line -->
+                            <path d="M50,100 L125,90 L200,110 L275,85 L350,95 L425,75 L500,90 L575,65 L650,55 L725,70 L800,50 L875,60 L950,45" 
+                                  stroke="var(--primary)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                            
+                            <!-- CPU Area -->
+                            <path d="M50,100 L125,90 L200,110 L275,85 L350,95 L425,75 L500,90 L575,65 L650,55 L725,70 L800,50 L875,60 L950,45 L950,180 L50,180 Z" 
+                                  fill="url(#cpuGradient)" opacity="0.2" />
+                            
+                            <!-- Memory Usage Line -->
+                            <path d="M50,120 L125,130 L200,115 L275,125 L350,110 L425,120 L500,105 L575,115 L650,100 L725,110 L800,90 L875,100 L950,90" 
+                                  stroke="var(--secondary)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                            
+                            <!-- Memory Area -->
+                            <path d="M50,120 L125,130 L200,115 L275,125 L350,110 L425,120 L500,105 L575,115 L650,100 L725,110 L800,90 L875,100 L950,90 L950,180 L50,180 Z" 
+                                  fill="url(#memoryGradient)" opacity="0.2" />
+                            
+                            <!-- Storage Usage Line -->
+                            <path d="M50,150 L125,145 L200,155 L275,160 L350,165 L425,155 L500,160 L575,165 L650,150 L725,145 L800,135 L875,130 L950,125" 
+                                  stroke="var(--alert)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                            
+                            <!-- Storage Area -->
+                            <path d="M50,150 L125,145 L200,155 L275,160 L350,165 L425,155 L500,160 L575,165 L650,150 L725,145 L800,135 L875,130 L950,125 L950,180 L50,180 Z" 
+                                  fill="url(#storageGradient)" opacity="0.2" />
+                            
+                            <!-- Gradients -->
+                            <defs>
+                                <linearGradient id="cpuGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="var(--primary)" />
+                                    <stop offset="100%" stop-color="transparent" />
+                                </linearGradient>
+                                <linearGradient id="memoryGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="var(--secondary)" />
+                                    <stop offset="100%" stop-color="transparent" />
+                                </linearGradient>
+                                <linearGradient id="storageGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="var(--alert)" />
+                                    <stop offset="100%" stop-color="transparent" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: var(--primary);"></div>
+                                <span>CPU Usage</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: var(--secondary);"></div>
+                                <span>Memory Usage</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: var(--alert);"></div>
+                                <span>Storage Usage</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="two-columns">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">System Load Distribution</div>
+                            <div class="chart-actions">
+                                <button class="chart-btn active">By Device</button>
+                                <button class="chart-btn">By Time</button>
+                            </div>
+                        </div>
+                        <div class="chart-area">
+                            <svg width="100%" height="100%" viewBox="0 0 400 200">
+                                <!-- Horizontal bar chart -->
+                                <!-- Device bars -->
+                                <g transform="translate(150, 0)">
+                                    <!-- Workstation-42 -->
+                                    <rect x="0" y="10" width="180" height="20" rx="3" fill="rgba(0, 247, 255, 0.7)" />
+                                    <text x="-10" y="24" text-anchor="end" fill="rgba(255, 255, 255, 0.8)" font-size="12">Workstation-42</text>
+                                    <text x="185" y="24" fill="white" font-size="12" font-weight="600">65%</text>
+                                    
+                                    <!-- Workstation-17 -->
+                                    <rect x="0" y="40" width="130" height="20" rx="3" fill="rgba(0, 247, 255, 0.7)" />
+                                    <text x="-10" y="54" text-anchor="end" fill="rgba(255, 255, 255, 0.8)" font-size="12">Workstation-17</text>
+                                    <text x="135" y="54" fill="white" font-size="12" font-weight="600">42%</text>
+                                    
+                                    <!-- Workstation-09 -->
+                                    <rect x="0" y="70" width="105" height="20" rx="3" fill="rgba(0, 247, 255, 0.7)" />
+                                    <text x="-10" y="84" text-anchor="end" fill="rgba(255, 255, 255, 0.8)" font-size="12">Workstation-09</text>
+                                    <text x="110" y="84" fill="white" font-size="12" font-weight="600">38%</text>
+                                    
+                                    <!-- Workstation-23 -->
+                                    <rect x="0" y="100" width="155" height="20" rx="3" fill="rgba(0, 247, 255, 0.7)" />
+                                    <text x="-10" y="114" text-anchor="end" fill="rgba(255, 255, 255, 0.8)" font-size="12">Workstation-23</text>
+                                    <text x="160" y="114" fill="white" font-size="12" font-weight="600">54%</text>
+                                    
+                                    <!-- Workstation-31 -->
+                                    <rect x="0" y="130" width="90" height="20" rx="3" fill="rgba(0, 247, 255, 0.7)" />
+                                    <text x="-10" y="144" text-anchor="end" fill="rgba(255, 255, 255, 0.8)" font-size="12">Workstation-31</text>
+                                    <text x="95" y="144" fill="white" font-size="12" font-weight="600">32%</text>
+                                    
+                                    <!-- Server-05 -->
+                                    <rect x="0" y="160" width="205" height="20" rx="3" fill="rgba(0, 247, 255, 0.7)" />
+                                    <text x="-10" y="174" text-anchor="end" fill="rgba(255, 255, 255, 0.8)" font-size="12">Server-05</text>
+                                    <text x="210" y="
